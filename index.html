@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אישור כניסה לתדלוק</title>
+    <style>
+        :root {
+            --primary-color: #25D366; /* WhatsApp Green */
+            --primary-hover: #20ba56;
+            --secondary-color: #4a5568;
+            --secondary-hover: #2d3748;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+            --focus-color: #3182ce;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            background-color: #fff;
+        }
+
+        input:focus {
+            border-color: var(--focus-color);
+        }
+
+        /* Summary Styles */
+        .summary-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .summary-section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #718096;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        /* Buttons */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-bottom: 12px;
+            text-decoration: none;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border-radius: 12px; /* התאמה למראה המעוגל של הכפתור הרשמי */
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-primary svg {
+            width: 26px;
+            height: 26px;
+            fill: currentColor;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-hover);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--secondary-color);
+            border-radius: 12px;
+        }
+
+        .btn-outline:hover {
+            background-color: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .warning-text {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="form-view" class="view">
+            <h1>הגדרת פרטים אישיים</h1>
+            <form id="gate-pass-form" onsubmit="event.preventDefault();">
+                <div class="form-group">
+                    <label for="input-name">שם מלא</label>
+                    <input type="text" id="input-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="input-id">מספר אישי</label>
+                    <input type="text" id="input-id" required>
+                </div>
+                <div class="form-group">
+                    <label for="input-cell-num">מספר טלפון סלולרי</label>
+                    <input type="tel" id="input-cell-num" required>
+                </div>
+                <div class="form-group">
+                    <label for="input-location">בסיס</label>
+                    <input type="text" id="input-location" list="location-options" required autocomplete="off">
+                    <datalist id="location-options">
+                        <option value="חטמ&quot;ר יהודה"></option>
+                        <option value="חטיבה"></option>
+                        <option value="מצודות יהודה"></option>
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="input-target-phone">מספר החמל לשליחת ההודעה</label>
+                    <input type="text" id="input-target-phone" required>
+                </div>
+                
+                <button type="button" class="btn btn-secondary" id="btn-save-view" onclick="forceShowSummary()">הצג סיכום בקשה</button>
+            </form>
+        </div>
+
+        <div id="summary-view" class="view">
+            <h1>אישור כניסה לתדלוק</h1>
+            
+            <div class="summary-card">
+                <div class="summary-section-title">פרטי רכב</div>
+                <div class="summary-item">
+                    <span class="summary-label">סוג רכב:</span>
+                    <span class="summary-value" id="sum-vehicle">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">מספר רכב:</span>
+                    <span class="summary-value" id="sum-plate-num">-</span>
+                </div>
+                <div id="url-warning" class="warning-text" style="display: none;">שימו לב: חסרים פרטי רכב בקישור ה-URL!</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-section-title">פרטים אישיים ויעד</div>
+                <div class="summary-item">
+                    <span class="summary-label">שם מלא:</span>
+                    <span class="summary-value" id="sum-name">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">מ.א:</span>
+                    <span class="summary-value" id="sum-id">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">סלולרי:</span>
+                    <span class="summary-value" id="sum-cell-num">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">מיקום:</span>
+                    <span class="summary-value" id="sum-location">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">יעד שליחה:</span>
+                    <span class="summary-value" id="sum-target-phone">-</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="sendWhatsAppRequest()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.763.461 3.42 1.267 4.874L2 22l5.244-1.233A9.954 9.954 0 0 0 12.004 22C17.52 22 22 17.522 22 12.004 22 6.48 17.52 2 12.004 2ZM12 20.3a8.24 8.24 0 0 1-4.215-1.154l-.303-.18-3.117.733.746-3.045-.197-.314A8.252 8.252 0 1 1 12 20.3Zm4.52-6.17c-.247-.124-1.464-.722-1.692-.805-.227-.082-.393-.124-.558.124-.165.248-.64.805-.785.97-.145.166-.29.186-.537.063a6.786 6.786 0 0 1-1.995-1.23 7.486 7.486 0 0 1-1.378-1.717c-.145-.248-.015-.382.11-.505.112-.11.247-.289.371-.434.124-.145.165-.248.248-.413.082-.165.041-.31-.02-.434-.062-.124-.558-1.343-.764-1.838-.2-.486-.403-.42-.558-.428-.144-.007-.31-.008-.475-.008a.916.916 0 0 0-.66.31c-.227.247-.867.846-.867 2.064 0 1.219.888 2.397 1.012 2.562.124.165 1.747 2.668 4.233 3.74 1.168.502 1.833.667 2.473.667.64 0 1.22-.33 1.644-.964.423-.634.423-1.177.29-1.285-.134-.108-.31-.166-.557-.29Z"/>
+                </svg>
+                <span>שלח בוואטסאפ</span>
+            </button>
+            
+            <button class="btn btn-outline" onclick="showFormView()">ערוך פרטים</button>
+        </div>
+    </div>
+
+    <script>
+        const storageKeys = ['name', 'id', 'cell-num', 'location', 'target-phone'];
+
+        const inputs = {
+            'name': document.getElementById('input-name'),
+            'id': document.getElementById('input-id'),
+            'cell-num': document.getElementById('input-cell-num'),
+            'location': document.getElementById('input-location'),
+            'target-phone': document.getElementById('input-target-phone')
+        };
+
+        const outputs = {
+            'vehicle': document.getElementById('sum-vehicle'),
+            'plate-num': document.getElementById('sum-plate-num'),
+            'name': document.getElementById('sum-name'),
+            'id': document.getElementById('sum-id'),
+            'cell-num': document.getElementById('sum-cell-num'),
+            'location': document.getElementById('sum-location'),
+            'target-phone': document.getElementById('sum-target-phone')
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initAutoSave();
+            checkStateAndRender();
+        });
+
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                vehicle: params.get('vehicle') || '',
+                'plate-num': params.get('plate-num') || ''
+            };
+        }
+
+        function isLocalStorageComplete() {
+            return storageKeys.every(key => {
+                const val = localStorage.getItem(key);
+                return val && val.trim() !== '';
+            });
+        }
+
+        function initAutoSave() {
+            storageKeys.forEach(key => {
+                const inputEl = inputs[key];
+                if (localStorage.getItem(key)) {
+                    inputEl.value = localStorage.getItem(key);
+                }
+                inputEl.addEventListener('input', () => {
+                    localStorage.setItem(key, inputEl.value);
+                });
+            });
+        }
+
+        function checkStateAndRender() {
+            const urlData = getUrlParams();
+            
+            outputs['vehicle'].textContent = urlData.vehicle || 'לא הוגדר בקישור';
+            outputs['plate-num'].textContent = urlData['plate-num'] || 'לא הוגדר בקישור';
+            
+            if (!urlData.vehicle || !urlData['plate-num']) {
+                document.getElementById('url-warning').style.display = 'block';
+            } else {
+                document.getElementById('url-warning').style.display = 'none';
+            }
+
+            if (isLocalStorageComplete()) {
+                showSummaryView();
+            } else {
+                showFormView();
+            }
+        }
+
+        function showFormView() {
+            document.getElementById('summary-view').classList.remove('active');
+            document.getElementById('form-view').classList.add('active');
+        }
+
+        function showSummaryView() {
+            storageKeys.forEach(key => {
+                outputs[key].textContent = localStorage.getItem(key) || '-';
+            });
+
+            document.getElementById('form-view').classList.remove('active');
+            document.getElementById('summary-view').classList.add('active');
+        }
+
+        function forceShowSummary() {
+            const form = document.getElementById('gate-pass-form');
+            if (form.checkValidity()) {
+                showSummaryView();
+            } else {
+                form.reportValidity();
+            }
+        }
+
+        function sendWhatsAppRequest() {
+            const urlData = getUrlParams();
+            const name = localStorage.getItem('name') || '';
+            const id = localStorage.getItem('id') || '';
+            const cellNum = localStorage.getItem('cell-num') || '';
+            const location = localStorage.getItem('location') || '';
+            let targetPhone = localStorage.getItem('target-phone') || '';
+
+            targetPhone = targetPhone.replace(/[\s-]/g, '');
+
+            const messageText = `*פורמט אישור כניסה לתדלוק- ${location}*\nשם מלא: ${name}\nמ.א: ${id}\nסוג רכב: ${urlData.vehicle}\nמספר רכב: ${urlData['plate-num']}\nסלולרי: ${cellNum}\nסיבת הגעה: תדלוק\n\nאשרו העברה בבקשה 👍🏻`;
+
+            const encodedText = encodeURIComponent(messageText);
+            const whatsappUrl = `https://api.whatsapp.com/send/?phone=${targetPhone}&text=${encodedText}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
